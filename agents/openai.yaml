@@ -1,0 +1,4 @@
+interface:
+  display_name: "ASO App Store Screenshots"
+  short_description: "Create App Store screenshots from app captures"
+  default_prompt: "Use $aso-appstore-screenshots to turn my existing app screenshots into App Store screenshot concepts and final exports."
