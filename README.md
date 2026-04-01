@@ -2,6 +2,8 @@
 
 Create App Store screenshot sets from an app codebase plus existing app screenshots.
 
+This repository is a Codex adaptation of Adam Lyttle's original Claude skill, [`claude-skill-aso-appstore-screenshots`](https://github.com/adamlyttleapps/claude-skill-aso-appstore-screenshots). The workflow, framing, and deterministic composition approach are based on that original work, then adapted here for Codex and pre-existing screenshot inputs.
+
 This skill helps Codex:
 - discover strong screenshot messages
 - review and rate supplied app screenshots
@@ -72,6 +74,12 @@ Use $aso-appstore-screenshots to turn my existing app screenshots into 5 App Sto
 python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py ~/.codex/skills/aso-appstore-screenshots
 ```
 
+## Attribution
+
+- Original creator: Adam Lyttle
+- Original repository: [`adamlyttleapps/claude-skill-aso-appstore-screenshots`](https://github.com/adamlyttleapps/claude-skill-aso-appstore-screenshots)
+- This repository: Codex adaptation for screenshot-input workflows without simulator dependency
+
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE). Keep Adam Lyttle's copyright and license notice with substantial copies or adaptations.

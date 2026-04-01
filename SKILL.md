@@ -7,6 +7,8 @@ description: Create and refine App Store screenshot sets from an app codebase pl
 
 Work from screenshots the user already has. Do not assume simulator control. Build a deterministic scaffold first, then optionally polish it with any image-generation tool the user explicitly asks to use.
 
+This skill is a Codex adaptation of Adam Lyttle's original Claude skill, `claude-skill-aso-appstore-screenshots`. Preserve that attribution when redistributing substantial copies or adaptations.
+
 ## Core Workflow
 
 ### 1. Build product context
