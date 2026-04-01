@@ -8,6 +8,7 @@ This skill helps Codex:
 - discover strong screenshot messages
 - review and rate supplied app screenshots
 - pair screenshots to benefits
+- structure the set around hook, proof, trust, and closer roles
 - choose a visual direction
 - compose App Store-ready PNG scaffolds
 - export a simple showcase image
@@ -57,15 +58,17 @@ Use $aso-appstore-screenshots to turn my existing app screenshots into 5 App Sto
 
 1. Inspect the app codebase and draft ASO benefit headlines
 2. Review provided screenshots and rate them `Great`, `Usable`, or `Retake`
-3. Pair screenshots to the approved messages
-4. Lock colors, font, and visual direction
-5. Generate deterministic App Store screenshot scaffolds
-6. Build a showcase image for review
+3. Enforce short outcome-driven copy with stronger first-slide hooks
+4. Pair screenshots to the approved messages
+5. Lock colors, font, and visual direction
+6. Generate deterministic App Store screenshot scaffolds
+7. Run thumbnail/safe-margin/policy QA
+8. Build a showcase image for review
 
 ## Scripts
 
 - `scripts/generate_frame.py` — generate the reusable device frame
-- `scripts/compose.py` — compose one screenshot scaffold
+- `scripts/compose.py` — compose one screenshot scaffold with size, crop focus, and frame-style controls
 - `scripts/showcase.py` — create a side-by-side preview
 
 ## Validation
