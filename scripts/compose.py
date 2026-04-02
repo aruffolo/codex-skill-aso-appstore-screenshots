@@ -11,9 +11,13 @@ from PIL import Image, ImageDraw, ImageFont
 DEFAULT_CANVAS_W = 1320
 DEFAULT_CANVAS_H = 2868
 DEVICE_W_RATIO = 0.798
+TEXT_TOP = 200
+TEXT_DEVICE_GAP = 92
 BEZEL = 15
 SCREEN_CORNER_R = 62
-DEVICE_Y_RATIO = 0.257
+ISLAND_W = 126
+ISLAND_H = 32
+FRAME_FILL = (18, 18, 18, 255)
 VERB_SIZE_MAX = 256
 VERB_SIZE_MIN = 150
 DESC_SIZE = 124
@@ -22,6 +26,7 @@ DESC_LINE_GAP = 24
 SAFE_MARGIN_RATIO = 0.055
 DEFAULT_BOLD_FONT = "/Library/Fonts/SF-Pro-Display-Black.otf"
 DEFAULT_FRAME_PATH = Path(__file__).resolve().parent.parent / "assets" / "device_frame.png"
+FRAME_SOURCE_W = 1030
 
 
 def hex_to_rgb(value: str) -> tuple[int, int, int]:
@@ -85,6 +90,53 @@ def focus_offset(focus: str, container_h: int, content_h: int) -> int:
     return -(content_h - container_h)
 
 
+def scaled_metric(value: int, device_w: int) -> int:
+    return max(1, round(value * device_w / FRAME_SOURCE_W))
+
+
+def build_frame_layer(
+    canvas_size: tuple[int, int],
+    device_x: int,
+    device_y: int,
+    device_w: int,
+    device_h: int,
+) -> Image.Image:
+    frame_corner_r = scaled_metric(88, device_w)
+    layer = Image.new("RGBA", canvas_size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(layer)
+    draw.rounded_rectangle(
+        [device_x, device_y, device_x + device_w, device_y + device_h],
+        radius=frame_corner_r,
+        fill=FRAME_FILL,
+    )
+    return layer
+
+
+def build_island_layer(
+    canvas_size: tuple[int, int],
+    device_x: int,
+    device_y: int,
+    device_w: int,
+) -> Image.Image:
+    island_w = scaled_metric(ISLAND_W, device_w)
+    island_h = scaled_metric(ISLAND_H, device_w)
+    island_r = island_h // 2
+    island_y = device_y + scaled_metric(18, device_w)
+    layer = Image.new("RGBA", canvas_size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(layer)
+    draw.rounded_rectangle(
+        [
+            device_x + (device_w - island_w) // 2,
+            island_y,
+            device_x + (device_w + island_w) // 2,
+            island_y + island_h,
+        ],
+        radius=island_r,
+        fill=(0, 0, 0, 255),
+    )
+    return layer
+
+
 def resize_screenshot(shot: Image.Image, screen_w: int) -> Image.Image:
     scale = screen_w / shot.width
     height = int(shot.height * scale)
@@ -98,19 +150,20 @@ def build_screen_layer(
     screen_y: int,
     screen_w: int,
     screen_h: int,
+    screen_corner_r: int,
     focus: str,
 ) -> Image.Image:
     mask = Image.new("L", canvas_size, 0)
     ImageDraw.Draw(mask).rounded_rectangle(
         [screen_x, screen_y, screen_x + screen_w, screen_y + screen_h],
-        radius=SCREEN_CORNER_R,
+        radius=screen_corner_r,
         fill=255,
     )
 
     layer = Image.new("RGBA", canvas_size, (0, 0, 0, 0))
     ImageDraw.Draw(layer).rounded_rectangle(
         [screen_x, screen_y, screen_x + screen_w, screen_y + screen_h],
-        radius=SCREEN_CORNER_R,
+        radius=screen_corner_r,
         fill=(0, 0, 0, 255),
     )
     layer.paste(shot, (screen_x, screen_y + focus_offset(focus, screen_h, shot.height)))
@@ -135,37 +188,63 @@ def compose(
     safe_margin = int(canvas_w * SAFE_MARGIN_RATIO)
     max_text_w = canvas_w - 2 * safe_margin
     max_verb_w = canvas_w - 2 * safe_margin
-    device_w = int(canvas_w * DEVICE_W_RATIO)
-    device_y = int(canvas_h * DEVICE_Y_RATIO)
-    bezel = 0 if frame_style == "frameless" else BEZEL
-    screen_w = device_w - 2 * bezel
-    screen_h = canvas_h - device_y - safe_margin
-
     canvas = Image.new("RGBA", (canvas_w, canvas_h), (*hex_to_rgb(bg_hex), 255))
     draw = ImageDraw.Draw(canvas)
 
     verb_font = fit_font(verb.upper(), max_verb_w, VERB_SIZE_MAX, VERB_SIZE_MIN, font_path)
     desc_font = load_font(font_path, DESC_SIZE)
 
-    text_y = 200
+    text_y = TEXT_TOP
     text_y = draw_centered(draw, canvas_w, text_y, verb.upper(), verb_font, text_color)
     text_y += VERB_DESC_GAP
-    draw_centered(draw, canvas_w, text_y, desc.upper(), desc_font, text_color, max_w=max_text_w)
+    text_bottom = draw_centered(draw, canvas_w, text_y, desc.upper(), desc_font, text_color, max_w=max_text_w)
+
+    max_device_h = canvas_h - safe_margin - (text_bottom + TEXT_DEVICE_GAP)
+    shot_source = Image.open(screenshot_path).convert("RGBA")
+    shot_ratio = shot_source.height / shot_source.width
+    requested_device_w = int(canvas_w * DEVICE_W_RATIO)
+    bezel = 0 if frame_style == "frameless" else scaled_metric(BEZEL, requested_device_w)
+    screen_w = requested_device_w - 2 * bezel
+    screen_h = int(screen_w * shot_ratio)
+    device_w = requested_device_w
+    device_h = screen_h + 2 * bezel
+
+    if device_h > max_device_h:
+        device_h = max_device_h
+        screen_h = device_h - 2 * bezel
+        screen_w = int(screen_h / shot_ratio)
+        device_w = screen_w + 2 * bezel
 
     device_x = (canvas_w - device_w) // 2
+    device_y = canvas_h - safe_margin - device_h
+    screen_corner_r = scaled_metric(SCREEN_CORNER_R, device_w)
     screen_x = device_x + bezel
     screen_y = device_y + bezel
 
-    shot = resize_screenshot(Image.open(screenshot_path).convert("RGBA"), screen_w)
+    shot = resize_screenshot(shot_source, screen_w)
+    if frame_style == "framed":
+        canvas = Image.alpha_composite(
+            canvas,
+            build_frame_layer(
+                canvas.size,
+                device_x,
+                device_y,
+                device_w,
+                device_h,
+            ),
+        )
     canvas = Image.alpha_composite(
         canvas,
-        build_screen_layer(canvas.size, shot, screen_x, screen_y, screen_w, screen_h, focus),
+        build_screen_layer(canvas.size, shot, screen_x, screen_y, screen_w, screen_h, screen_corner_r, focus),
     )
 
     if frame_style == "framed":
-        frame = Image.open(frame_path).convert("RGBA")
-        frame_layer = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
-        frame_layer.paste(frame.resize((device_w, frame.height * device_w // frame.width), Image.LANCZOS), (device_x, device_y))
+        frame_layer = build_island_layer(
+            canvas.size,
+            device_x,
+            device_y,
+            device_w,
+        )
         canvas = Image.alpha_composite(canvas, frame_layer)
 
     out = Path(output_path)
