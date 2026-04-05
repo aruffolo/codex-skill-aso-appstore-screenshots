@@ -7,6 +7,7 @@ Use this only when the user explicitly wants AI-polished screenshot variants and
 - deterministic scaffold already generated
 - final export size already locked
 - user understands Gemini usage may incur API charges
+- working Gemini quota is available for the current project
 - image generation or image editing tooling is actually available in the current Codex environment
 - the Gemini integration can accept scaffold-based edit requests, not just text prompts
 
@@ -49,9 +50,11 @@ Then generate 3 new variants again if the user is still exploring. If the user a
 Use prompts with these ingredients:
 - the scaffold is the layout source of truth
 - preserve headline placement and screenshot content
+- preserve every pixel inside the phone screen exactly
 - improve realism and premium App Store finish
 - keep the same device frame treatment across the set
 - avoid changing the screen shown inside the device
+- do not repaint, replace, crop, or invent any in-app content, text, icons, or imagery
 
 For later slides, add:
 - match the visual treatment from the approved style template
@@ -78,3 +81,12 @@ Copy only the approved result into `final/`.
 Any Gemini-polished image that does not land at the final App Store size must be cropped or resized before user review of final candidates.
 
 Keep final approved files at the requested export size.
+
+## Quota Troubleshooting
+
+If Gemini returns quota or billing errors such as `429 RESOURCE_EXHAUSTED`:
+- stop Gemini polish for that turn
+- keep the deterministic scaffold as the fallback output
+- tell the user to check Google AI Studio billing and rate limits
+- note that free-tier image quota can be exhausted by Google AI Studio usage on the same project
+- do not imply that a valid API key alone guarantees image-edit availability

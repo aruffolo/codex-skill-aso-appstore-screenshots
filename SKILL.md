@@ -187,6 +187,7 @@ Never skip the deterministic scaffold. It is the recovery path.
 Before running Gemini polish:
 - state clearly that Gemini polish is optional
 - state that Gemini usage may incur API charges
+- state that working Gemini quota is required, not just a valid API key
 - confirm deterministic mode remains the fallback if Gemini tooling is unavailable
 
 When the user wants Gemini polish:
@@ -205,6 +206,12 @@ Persist Gemini decisions in `appstore-screenshots/state/polish-decisions.md`:
 - any locked visual constraints for later slides
 
 If Gemini tooling is missing, stop at the deterministic scaffold and say exactly what integration is missing.
+
+If Gemini tooling is available but image generation or editing fails with quota errors such as `429 RESOURCE_EXHAUSTED`, stop and call out the likely billing or usage issue explicitly:
+- check Google AI Studio billing
+- check Google AI Studio rate limits
+- confirm the current project is not exhausted on free tier
+- note that Google AI Studio usage on the same project can consume the same Gemini API quota
 
 ### 8. Final review
 

@@ -40,6 +40,7 @@ For optional Gemini polish mode:
 
 - a Gemini MCP server or equivalent Gemini-compatible image editing integration available to Codex
 - any required Gemini API credentials configured for that integration
+- available Gemini quota for the current Google AI Studio project
 
 Gemini polish is optional and may incur API charges. Deterministic scaffold mode does not require Gemini.
 
@@ -117,6 +118,7 @@ Optional.
 - generates polished variants for review
 - keeps the approved scaffold layout as the source of truth
 - works best when a Gemini MCP image-edit workflow is available
+- requires working quota, not just a valid API key
 - should be used only when the user explicitly wants AI polish
 
 ### Retake coach mode
@@ -140,6 +142,16 @@ Important:
 - for framed compositions, use screenshots without the status bar / island when possible
 - if you feed already-framed or `raw` screenshots into a framed export, the result can look duplicated or broken
 - in repositories like this one, prefer `no_statusbar` screenshot variants as input for framed exports
+
+Gemini polish prompt rule:
+- preserve every pixel inside the phone screen exactly
+- do not repaint, replace, crop, or invent any in-app content, text, icons, or imagery
+- only polish outside-phone presentation, device realism, lighting, and overall finish
+
+Quota troubleshooting:
+- if Gemini returns `429 RESOURCE_EXHAUSTED`, check Google AI Studio billing and rate limits
+- free-tier image quota can be exhausted by AI Studio usage on the same project
+- deterministic scaffold mode remains the fallback when Gemini quota is unavailable
 
 ## Output Structure
 
