@@ -7,6 +7,7 @@ This repository is a Codex adaptation of Adam Lyttle's original Claude skill, [`
 This skill helps Codex:
 - discover strong screenshot messages
 - review and rate supplied app screenshots
+- inspect competitor listings, user feedback, and positioning gaps
 - coach simulator or manual retakes when supplied screenshots are weak
 - pair screenshots to benefits
 - choose a visual direction
@@ -65,13 +66,38 @@ Use $aso-appstore-screenshots to turn my existing app screenshots into 5 App Sto
 ## What the skill does
 
 1. Inspect the app codebase and draft ASO benefit headlines
-2. Review provided screenshots and rate them `Great`, `Usable`, or `Retake`
-3. Coach retakes with explicit instructions when screenshots are weak
-4. Pair screenshots to the approved messages
-5. Lock colors, font, and visual direction
-6. Generate deterministic App Store screenshot scaffolds
-7. Optionally generate Gemini-polished variants from those scaffolds
-8. Build a showcase image for review
+2. Inspect competitor listings, reviews, and obvious positioning gaps when available
+3. Draft a default 6-slide narrative for iPhone sets
+4. Review provided screenshots and rate them `Great`, `Usable`, or `Retake`
+5. Coach retakes with explicit instructions when screenshots are weak
+6. Pair screenshots to the approved messages
+7. Lock colors, font, and visual direction
+8. Generate deterministic App Store screenshot scaffolds
+9. Optionally generate Gemini-polished variants from those scaffolds
+10. Build a showcase image for review
+
+## Strategic defaults
+
+The merged workflow intentionally keeps the stronger strategic guidance:
+
+- default iPhone narrative:
+  - hook
+  - core outcome
+  - feature proof
+  - second feature
+  - trust/evidence when the product can support it
+  - closer
+- draft `3-6` headlines, not just the minimum set
+- prefer short benefit copy, ideally `<= 8 words`
+- generate `2-3` hook variants for slide 1
+- run a copy gate before composing:
+  - hide the UI mentally
+  - if the text alone does not sell the benefit, rewrite it
+- keep trust/proof claims only when the screenshots can genuinely support them
+- enforce App Store policy lint:
+  - no fake UI
+  - no unsupported claims
+  - no explicit `Download now`-style CTA inside screenshots
 
 ## Modes
 
@@ -110,6 +136,11 @@ Optional, but recommended when supplied screenshots are weak.
 
 The frame generator now defaults to a plain frame. Use `--dynamic-island` only when the user explicitly wants it.
 
+Important:
+- for framed compositions, use screenshots without the status bar / island when possible
+- if you feed already-framed or `raw` screenshots into a framed export, the result can look duplicated or broken
+- in repositories like this one, prefer `no_statusbar` screenshot variants as input for framed exports
+
 ## Output Structure
 
 ```text
@@ -140,6 +171,20 @@ appstore-screenshots/
 
 ```bash
 python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py ~/.codex/skills/aso-appstore-screenshots
+```
+
+Recommended smoke test:
+
+```bash
+python3 scripts/generate_frame.py --dynamic-island
+python3 scripts/compose.py \
+  --bg "#8B532F" \
+  --verb "TRACK" \
+  --desc "EVERY BATCH" \
+  --screenshot path/to/no_statusbar-screen.png \
+  --dynamic-island \
+  --output /tmp/aso-scaffold.png
+python3 scripts/showcase.py --screenshots /tmp/aso-scaffold.png /tmp/aso-scaffold.png --output /tmp/aso-showcase.png
 ```
 
 ## Attribution
