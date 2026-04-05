@@ -4,10 +4,13 @@ Compose one App Store screenshot scaffold.
 """
 
 import argparse
-import os
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont, ImageChops
+from PIL import Image, ImageDraw, ImageFont
+
+from generate_frame import DI_OUT as DEFAULT_DYNAMIC_ISLAND_FRAME_PATH
+from generate_frame import OUT as DEFAULT_FRAME_PATH
+from generate_frame import build_frame
 
 CANVAS_W = 1290
 CANVAS_H = 2796
@@ -24,7 +27,6 @@ DESC_LINE_GAP = 24
 MAX_TEXT_W = int(CANVAS_W * 0.92)
 MAX_VERB_W = int(CANVAS_W * 0.92)
 DEFAULT_BOLD_FONT = "/Library/Fonts/SF-Pro-Display-Black.otf"
-DEFAULT_FRAME_PATH = Path(__file__).resolve().parent.parent / "assets" / "device_frame.png"
 
 
 def hex_to_rgb(value: str) -> tuple[int, int, int]:
@@ -101,6 +103,14 @@ def build_screen_layer(canvas_size: tuple[int, int], shot: Image.Image, screen_x
     return layer
 
 
+def ensure_frame_asset(frame_path: Path, include_dynamic_island: bool) -> Path:
+    if frame_path.exists():
+        return frame_path
+    frame_path.parent.mkdir(parents=True, exist_ok=True)
+    build_frame(include_dynamic_island=include_dynamic_island).save(frame_path, "PNG")
+    return frame_path
+
+
 def compose(bg_hex: str, verb: str, desc: str, screenshot_path: str, output_path: str, font_path: str, frame_path: str, text_color: str) -> None:
     canvas = Image.new("RGBA", (CANVAS_W, CANVAS_H), (*hex_to_rgb(bg_hex), 255))
     draw = ImageDraw.Draw(canvas)
@@ -139,14 +149,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--screenshot", required=True, help="Input screenshot path")
     parser.add_argument("--output", required=True, help="Output PNG path")
     parser.add_argument("--font", default=DEFAULT_BOLD_FONT, help="Font path")
-    parser.add_argument("--frame", default=str(DEFAULT_FRAME_PATH), help="Device frame PNG path")
+    parser.add_argument("--frame", help="Device frame PNG path")
+    parser.add_argument("--dynamic-island", action="store_true", help="Use a frame with Dynamic Island")
     parser.add_argument("--text-color", default="#FFFFFF", help="Text hex color")
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    compose(args.bg, args.verb, args.desc, args.screenshot, args.output, args.font, args.frame, args.text_color)
+    default_frame = DEFAULT_DYNAMIC_ISLAND_FRAME_PATH if args.dynamic_island else DEFAULT_FRAME_PATH
+    frame_path = Path(args.frame) if args.frame else default_frame
+    ensured_frame = ensure_frame_asset(frame_path, include_dynamic_island=args.dynamic_island)
+    compose(args.bg, args.verb, args.desc, args.screenshot, args.output, args.font, str(ensured_frame), args.text_color)
 
 
 if __name__ == "__main__":
