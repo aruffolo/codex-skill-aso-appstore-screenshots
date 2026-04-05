@@ -40,6 +40,7 @@ Avoid:
 - title weight and spacing consistent
 - screenshot aligned to the screen cutout
 - export at the final target size, not scaled later by hand
+- if AI polish is enabled, keep one approved style template across the whole set
 
 ## Naming
 
@@ -58,5 +59,8 @@ Persist resumable notes in `appstore-screenshots/state/`:
 - `screenshot-review.md`
 - `pairings.md`
 - `design-direction.md`
+- `retake-plan.md`
+- `style-template.md`
+- `polish-decisions.md`
 
 These can be plain markdown. Keep them short and current.

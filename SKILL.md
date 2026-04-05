@@ -51,6 +51,12 @@ Open every candidate screenshot. Rate each one:
 - `Usable`
 - `Retake`
 
+For every screenshot, say:
+- what it shows
+- what works
+- what does not work
+- the verdict
+
 Check for:
 - empty or low-content states
 - debug UI
@@ -58,8 +64,25 @@ Check for:
 - clipped key content
 - inconsistent light/dark mode
 - noisy status bar
+- generic or low-conviction screens like settings, onboarding, or sparse lists when a stronger screen exists
 
 Give blunt retake guidance when needed. The goal is conversion, not coverage.
+
+If any screenshot is `Retake`, do not hand-wave. Give an explicit retake plan:
+- which screen to capture instead
+- which app state or seeded data to show
+- whether to retake in light or dark mode for consistency
+- what visual clutter to remove
+- what the screenshot must prove at thumbnail size
+- whether simulator capture is recommended to get a cleaner result
+
+When coaching simulator retakes, be concrete:
+- name the exact screen to open
+- name the exact data density to show
+- call out status bar cleanup
+- reject empty states unless the whole app is about empty-state onboarding
+
+Persist retake guidance in `appstore-screenshots/state/retake-plan.md` when needed.
 
 ### 4. Pair screenshot to headline
 
@@ -103,9 +126,18 @@ appstore-screenshots/
     screenshot-review.md
     pairings.md
     design-direction.md
+    retake-plan.md
+    style-template.md
+    polish-decisions.md
   work/
     01-benefit-slug/
       scaffold.png
+      v1.png
+      v2.png
+      v3.png
+      v1-resized.png
+      v2-resized.png
+      v3-resized.png
     02-benefit-slug/
       scaffold.png
   final/
@@ -118,13 +150,35 @@ Always persist state files in the project so work can resume in a later Codex se
 
 ### 7. Optional polish
 
-If the user explicitly wants AI polish and a suitable image-generation workflow is available, use the scaffold as the source of truth:
+If the user explicitly wants AI polish and Gemini MCP or equivalent Gemini-compatible image editing is available, use the scaffold as the source of truth:
 - preserve text hierarchy
 - preserve screenshot content
 - preserve frame placement
 - ask for small visual polish, not a redesign
 
 Never skip the deterministic scaffold. It is the recovery path.
+
+Before running Gemini polish:
+- state clearly that Gemini polish is optional
+- state that Gemini usage may incur API charges
+- confirm deterministic mode remains the fallback if Gemini tooling is unavailable
+
+When the user wants Gemini polish:
+1. Create the deterministic scaffold first.
+2. For the first benefit, generate 3 polished variants from the scaffold.
+3. Crop or resize every polished variant to the final App Store export size before review.
+4. Ask the user to pick a winner.
+5. Save the winning polished slide path and its visual treatment in `appstore-screenshots/state/style-template.md`.
+6. For later benefits, keep the new scaffold layout and screenshot content, but match the approved visual treatment from the saved style template.
+7. When iterating, generate 3 new variants again unless the user asks for fewer.
+
+Persist Gemini decisions in `appstore-screenshots/state/polish-decisions.md`:
+- whether Gemini polish was enabled
+- which provider/tooling was available
+- which slide was chosen as the style template
+- any locked visual constraints for later slides
+
+If Gemini tooling is missing, stop at the deterministic scaffold and say exactly what integration is missing.
 
 ### 8. Final review
 
@@ -138,6 +192,7 @@ Before declaring done, check:
 ## File Guidance
 
 Load [workflow.md](references/workflow.md) when you need the detailed rating rubric, naming rules, or composition checklist.
+Load [gemini-polish.md](references/gemini-polish.md) when the user explicitly wants AI polish or when you need the detailed Gemini variant workflow.
 
 ## Commands
 
@@ -190,3 +245,5 @@ python3 ~/.codex/skills/aso-appstore-screenshots/scripts/showcase.py \
 - Do not write generic marketing lines when the screen can support something more specific.
 - Do not force every screenshot to use the same layout if the user asks for variation, but keep one consistent system unless asked otherwise.
 - Do not require Figma. Use code first.
+- Do not imply Gemini polish is free; call out that API charges may apply.
+- Do not run AI polish by default; deterministic scaffolds stay the default path.
