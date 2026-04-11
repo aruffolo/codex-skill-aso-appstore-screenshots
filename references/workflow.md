@@ -70,6 +70,7 @@ If the product lacks a trustworthy proof slide, use a stronger closer instead of
 - make the first slide survive App Store overlay risk
 - prefer real UI over decorative graphics
 - use before/after or zoom emphasis when that clarifies the value
+- if AI polish is enabled, keep one approved style template across the whole set
 
 ## Apple policy lint
 
@@ -96,5 +97,8 @@ Persist resumable notes in `appstore-screenshots/state/`:
 - `screenshot-review.md`
 - `pairings.md`
 - `design-direction.md`
+- `retake-plan.md`
+- `style-template.md`
+- `polish-decisions.md`
 
 These can be plain markdown. Keep them short and current.
