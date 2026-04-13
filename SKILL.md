@@ -136,6 +136,15 @@ Current Apple rule of thumb:
 
 If branding is unclear, propose one primary color plus one fallback and explain which direction converts better.
 
+Visual direction rules:
+- avoid flat, generic backgrounds when the set would benefit from more depth
+- prefer gradients, texture, or subtle patterns over plain fills when they improve premium feel without hurting readability
+- pick a real font direction; avoid default-feeling type choices when a more distinctive option fits the brand
+- commit to a palette; one strong accent is better than several timid ones
+- avoid predictable, template-looking layouts when a stronger composition is possible
+- avoid purple-on-white clichés or generic SaaS-looking visuals unless the product brand already demands them
+- keep background treatment secondary to the headline and screenshot proof; style should support conversion, not compete with it
+
 ### 6. Compose deterministic scaffolds
 
 Use the bundled scripts:

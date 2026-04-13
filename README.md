@@ -100,6 +100,14 @@ The merged workflow intentionally keeps the stronger strategic guidance:
   - no unsupported claims
   - no explicit `Download now`-style CTA inside screenshots
 
+Visual direction defaults:
+- avoid flat, generic backgrounds when more depth would strengthen the set
+- prefer gradients, texture, or subtle patterns over plain fills when they keep the screenshot readable
+- pick a real font direction instead of default-feeling typography
+- commit to a palette; one bold accent usually converts better than several weak ones
+- avoid predictable template layouts and purple-on-white cliché aesthetics unless the product brand already calls for them
+- keep styling subordinate to the headline and the proof inside the screenshot
+
 ## Modes
 
 ### Deterministic scaffold mode
