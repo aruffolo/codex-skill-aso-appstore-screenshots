@@ -1,4 +1,4 @@
 interface:
   display_name: "ASO App Store Screenshots"
-  short_description: "Create App Store screenshots from captures, with optional Gemini polish"
-  default_prompt: "Use $aso-appstore-screenshots to turn my existing app screenshots into App Store screenshot concepts, deterministic exports, and optional Gemini-polished variants."
+  short_description: "Build App Store screenshot campaigns"
+  default_prompt: "Use $aso-appstore-screenshots to build an App Store screenshot campaign using the original workflow, delegated research, and phase-based instructions."

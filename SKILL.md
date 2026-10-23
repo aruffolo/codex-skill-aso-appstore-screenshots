@@ -1,297 +1,35 @@
 ---
 name: aso-appstore-screenshots
-description: Create and refine App Store screenshot sets from an app codebase plus existing app screenshots. Use when Codex needs to discover ASO benefit headlines, review and rate supplied screenshots, pair screens to messages, choose colors and typography, compose App Store-ready PNGs, or build a showcase image without Figma or simulator automation.
+description: "Create App Store screenshot campaigns from app code and screenshots."
 ---
 
 # ASO App Store Screenshots
 
-Work from screenshots the user already has. Do not assume simulator control. Build a deterministic scaffold first, then optionally polish it with any image-generation tool the user explicitly asks to use.
+Follow Adam Lyttle's original workflow, disclosed one phase at a time. The preserved source and scripts are in `upstream/`; [UPSTREAM.json](UPSTREAM.json) records their revision, hashes, and exact phase ranges. Do not load the full source during normal campaign work.
 
-This skill is a Codex adaptation of Adam Lyttle's original Claude skill, `claude-skill-aso-appstore-screenshots`. Preserve that attribution when redistributing substantial copies or adaptations.
+First read [Codex state](references/codex.md), [original principles](references/phases/principles.md), and [original recall](references/phases/recall.md). Recover saved decisions before choosing a phase. Keep the campaign's brief, approvals, and current phase in the parent agent.
 
-## Core Workflow
+## Load only the current phase
 
-### 1. Build product context
+For any generation or delivery phase, also read [Codex execution](references/execution.md). Every generation phase requires the [original format](references/phases/generation-design.md), including on resume; retain approved choices rather than reopening setup.
 
-Inspect the app codebase, metadata, and any existing marketing copy to answer:
-- What the app does
-- Who it is for
-- Why it is better than alternatives
+- **Discovery:** read [original benefit discovery](references/phases/benefits.md). Delegate codebase/metadata investigation through [research](references/research.md); use its concise report to refine benefits with the user. Add competitor research only when useful or requested.
+- **Pairing:** read [original screenshot pairing](references/phases/pairing.md). Inspect the actual screenshots yourself; preserve the original benefit and pairing approval gates.
+- **Generation setup:** read [automatic brand colour](references/phases/generation-colour.md) and [delivery requirements](references/delivery.md). Resolve the image provider and target sizes before rendering.
+- **Scaffold:** read [original scaffold process](references/phases/generation-scaffold.md). Run the preserved composer; retain the original creative direction.
+- **Enhancement or revision:** read [original image prompts](references/phases/generation-enhance.md) together with [original crop/review/approval steps](references/phases/generation-review.md). Preserve the scaffold, approved style image, and revision reference roles. Load [OpenAI execution](references/openai.md) only when that provider is selected.
+- **Delivery:** read [original output/state/showcase](references/phases/generation-delivery.md) and [delivery requirements](references/delivery.md). Persist each approval immediately; showcase only approved finals.
 
-Also inspect:
-- top competitor listings in the same category
-- user reviews or feedback when available
-- obvious visual/message gaps you can exploit
+## Delegation and context
 
-Ask only the missing market questions. Keep the discussion focused on conversion, not feature inventory.
+Research always runs in a fresh subagent. Read its short findings and report path, not its transcript. If delegation is unavailable, report the research blocker and continue only work independent of it; do not silently research inline.
 
-### 2. Discover the screenshot messages
+Keep benefit judgment, screenshot selection, art direction, image generation, and user approvals in the parent. A separate visual QA agent is useful for a large batch or requested independent review; give it only approved requirements and candidate images, and request actionable findings. It must not redesign the campaign or approve on the user's behalf.
 
-Draft the screenshot order before writing visuals. For iPhone sets, default to 6 slides:
-- `1. hook`
-- `2. core outcome`
-- `3. feature proof`
-- `4. second feature`
-- `5. trust or evidence`
-- `6. closer`
+Save compact state at each phase boundary. On resumption, load state and the needed phase rather than every reference. Progressive disclosure avoids loading irrelevant material; it cannot remove instructions already read in the current conversation.
 
-Draft 3 to 6 benefit headlines. Each should:
-- start with an action verb
-- describe a user outcome, not an implementation detail
-- map to a screen the user can actually show
-- stay short enough to scan at thumbnail size, ideally `<= 8 words`
+## Additive layer boundary
 
-Good pattern:
-- `TRACK EVERY BOTTLE`
-- `PLAN PREP AHEAD`
-- `FOLLOW EVERY TIMELINE`
+The original owns the creative workflow: specific verb-led benefits, strongest first slide, solid brand background, heavy consistent type, relevant complete-panel breakouts, three variants, reference-driven consistency, and explicit approvals. Codex mappings and current platform requirements are documented overrides; optional providers do not change that design.
 
-Bad pattern:
-- `ADVANCED ANALYTICS`
-- `MODERN UI`
-- `POWERFUL FEATURES`
-
-Run a copy gate before moving on:
-- cover the UI mentally and read only the text
-- if the text alone does not sell a user outcome, rewrite it
-- generate `2 to 3` variants for slide 1 and pick the strongest hook
-
-Do not move on until the user confirms the headline list and order.
-
-### 3. Review the provided screenshots
-
-Accept:
-- a directory
-- explicit file paths
-- a glob pattern
-
-Open every candidate screenshot. Rate each one:
-- `Great`
-- `Usable`
-- `Retake`
-
-For every screenshot, say:
-- what it shows
-- what works
-- what does not work
-- the verdict
-
-Check for:
-- empty or low-content states
-- debug UI
-- weak hierarchy at thumbnail size
-- clipped key content
-- inconsistent light/dark mode
-- noisy status bar
-- poor proof value for trust screenshots
-- weak before/after potential when transformation is the real value
-- generic or low-conviction screens like settings, onboarding, or sparse lists when a stronger screen exists
-
-Give blunt retake guidance when needed. The goal is conversion, not coverage.
-
-If any screenshot is `Retake`, do not hand-wave. Give an explicit retake plan:
-- which screen to capture instead
-- which app state or seeded data to show
-- whether to retake in light or dark mode for consistency
-- what visual clutter to remove
-- what the screenshot must prove at thumbnail size
-- whether simulator capture is recommended to get a cleaner result
-
-When coaching simulator retakes, be concrete:
-- name the exact screen to open
-- name the exact data density to show
-- call out status bar cleanup
-- reject empty states unless the whole app is about empty-state onboarding
-
-Persist retake guidance in `appstore-screenshots/state/retake-plan.md` when needed.
-
-### 4. Pair screenshot to headline
-
-For each confirmed headline, pick the best screenshot. Prioritize:
-- direct relevance
-- strong visual density
-- quick comprehension at thumbnail size
-- variety across the set
-
-If a headline has no strong screenshot, say so and stop for retakes instead of forcing a weak pairing.
-
-### 5. Lock design direction
-
-Before composing, confirm:
-- primary background color
-- optional accent color
-- font choice
-- tone: minimal, premium, energetic, clinical, playful
-
-Defaults:
-- title font: `SF Pro Display Black` if installed
-- subtitle font: `SF Pro Display Black` if installed
-- device frame: generated by `scripts/generate_frame.py` without Dynamic Island by default
-- export size: `1290x2796` unless the user wants a different App Store target
-
-Current Apple rule of thumb:
-- `1 to 10` screenshots per device family
-- prefer one accepted `6.9"` iPhone size as source export
-- if exact current sizes matter, verify against Apple docs before exporting
-
-If branding is unclear, propose one primary color plus one fallback and explain which direction converts better.
-
-Visual direction rules:
-- avoid flat, generic backgrounds when the set would benefit from more depth
-- prefer gradients, texture, or subtle patterns over plain fills when they improve premium feel without hurting readability
-- pick a real font direction; avoid default-feeling type choices when a more distinctive option fits the brand
-- commit to a palette; one strong accent is better than several timid ones
-- avoid predictable, template-looking layouts when a stronger composition is possible
-- avoid purple-on-white clichés or generic SaaS-looking visuals unless the product brand already demands them
-- keep background treatment secondary to the headline and screenshot proof; style should support conversion, not compete with it
-
-### 6. Compose deterministic scaffolds
-
-Use the bundled scripts:
-- `scripts/generate_frame.py` to regenerate the reusable device frame asset
-- `scripts/compose.py` to build each screenshot
-- `scripts/showcase.py` to assemble a quick preview strip
-
-Recommended output structure inside the user project:
-
-```text
-appstore-screenshots/
-  state/
-    benefits.md
-    screenshot-review.md
-    pairings.md
-    design-direction.md
-    retake-plan.md
-    style-template.md
-    polish-decisions.md
-  work/
-    01-benefit-slug/
-      scaffold.png
-      v1.png
-      v2.png
-      v3.png
-      v1-resized.png
-      v2-resized.png
-      v3-resized.png
-    02-benefit-slug/
-      scaffold.png
-  final/
-    01-benefit-slug.png
-    02-benefit-slug.png
-  showcase.png
-```
-
-Always persist state files in the project so work can resume in a later Codex session without rediscovery.
-
-### 7. Optional polish
-
-If the user explicitly wants AI polish and Gemini MCP or equivalent Gemini-compatible image editing is available, use the scaffold as the source of truth:
-- preserve text hierarchy
-- preserve screenshot content
-- preserve frame placement
-- ask for small visual polish, not a redesign
-
-Never skip the deterministic scaffold. It is the recovery path.
-
-Before running Gemini polish:
-- state clearly that Gemini polish is optional
-- state that Gemini usage may incur API charges
-- state that working Gemini quota is required, not just a valid API key
-- confirm deterministic mode remains the fallback if Gemini tooling is unavailable
-
-When the user wants Gemini polish:
-1. Create the deterministic scaffold first.
-2. For the first benefit, generate 3 polished variants from the scaffold.
-3. Crop or resize every polished variant to the final App Store export size before review.
-4. Ask the user to pick a winner.
-5. Save the winning polished slide path and its visual treatment in `appstore-screenshots/state/style-template.md`.
-6. For later benefits, keep the new scaffold layout and screenshot content, but match the approved visual treatment from the saved style template.
-7. When iterating, generate 3 new variants again unless the user asks for fewer.
-
-Persist Gemini decisions in `appstore-screenshots/state/polish-decisions.md`:
-- whether Gemini polish was enabled
-- which provider/tooling was available
-- which slide was chosen as the style template
-- any locked visual constraints for later slides
-
-If Gemini tooling is missing, stop at the deterministic scaffold and say exactly what integration is missing.
-
-If Gemini tooling is available but image generation or editing fails with quota errors such as `429 RESOURCE_EXHAUSTED`, stop and call out the likely billing or usage issue explicitly:
-- check Google AI Studio billing
-- check Google AI Studio rate limits
-- confirm the current project is not exhausted on free tier
-- note that Google AI Studio usage on the same project can consume the same Gemini API quota
-
-### 8. Final review
-
-Before declaring done, check:
-- message order makes narrative sense
-- typography consistent across all slides
-- screenshot crops show the intended feature clearly
-- backgrounds consistent
-- final files open at the requested export size
-- first slide still works at thumbnail size
-- text stays inside safe margins
-- no likely collision with App Store overlays on the first slide
-- proof or trust claims are supported by the product
-- no banned CTA-style copy like `Download now`
-- localized variants keep readable line lengths when the user requests localization
-
-## File Guidance
-
-Load [workflow.md](references/workflow.md) when you need the detailed rating rubric, naming rules, or composition checklist.
-Load [gemini-polish.md](references/gemini-polish.md) when the user explicitly wants AI polish or when you need the detailed Gemini variant workflow.
-
-## Commands
-
-Generate or refresh the frame:
-
-```bash
-python3 ~/.codex/skills/aso-appstore-screenshots/scripts/generate_frame.py
-```
-
-Generate an optional Dynamic Island frame:
-
-```bash
-python3 ~/.codex/skills/aso-appstore-screenshots/scripts/generate_frame.py --dynamic-island
-```
-
-Compose one screenshot:
-
-```bash
-python3 ~/.codex/skills/aso-appstore-screenshots/scripts/compose.py \
-  --bg "#8C3D1B" \
-  --verb "TRACK" \
-  --desc "EVERY BOTTLE" \
-  --screenshot path/to/screen.png \
-  --output appstore-screenshots/work/01-track-every-bottle/scaffold.png
-```
-
-Opt in to a Dynamic Island frame:
-
-```bash
-python3 ~/.codex/skills/aso-appstore-screenshots/scripts/compose.py \
-  --bg "#8C3D1B" \
-  --verb "TRACK" \
-  --desc "EVERY BOTTLE" \
-  --screenshot path/to/screen.png \
-  --dynamic-island \
-  --output appstore-screenshots/work/01-track-every-bottle/scaffold.png
-```
-
-Create a showcase:
-
-```bash
-python3 ~/.codex/skills/aso-appstore-screenshots/scripts/showcase.py \
-  --screenshots appstore-screenshots/final/01-track-every-bottle.png appstore-screenshots/final/02-plan-ahead.png \
-  --output appstore-screenshots/showcase.png
-```
-
-## Boundaries
-
-- Do not invent features that the product cannot show.
-- Do not write generic marketing lines when the screen can support something more specific.
-- Do not force every screenshot to use the same layout if the user asks for variation, but keep one consistent system unless asked otherwise.
-- Do not require Figma. Use code first.
-- Do not imply Gemini polish is free; call out that API charges may apply.
-- Do not run AI polish by default; deterministic scaffolds stay the default path.
+Follow explicit requests for scaffolds only or another creative direction and record the deviation. Keep upstream files unchanged; fixes or new capabilities belong in separately named layers.

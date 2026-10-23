@@ -1,0 +1,94 @@
+{
+  "repository": "https://github.com/adamlyttleapps/claude-skill-aso-appstore-screenshots",
+  "revision": "87e1c8054eec3a601835770e7d208a79d3ebcb19",
+  "files": {
+    "upstream/.gitignore": {
+      "source": ".gitignore",
+      "sha256": "6a1aef8880cfacb5f411e22005181b80df7bab6812af061127aa5396527f44a8"
+    },
+    "upstream/CLAUDE.md": {
+      "source": "CLAUDE.md",
+      "sha256": "72c62879516b0c2a5a2dc1ad8aff0d2444e3464ba9edd4e5c7147cde5b682bc7"
+    },
+    "upstream/LICENSE": {
+      "source": "LICENSE",
+      "sha256": "0724f66e8e4f6a81d5eb81abcd45610d3534ce53aee918a18be5588a4c8f8342"
+    },
+    "upstream/README.md": {
+      "source": "README.md",
+      "sha256": "99ca212a5e5aa15ca3bfb6eddc5898a66fa315c3cdac872ae106938262ff77e9"
+    },
+    "upstream/skill-source.md": {
+      "source": "SKILL.md",
+      "sha256": "5a29430e5be87a3b13a7cfa9c80758121b7fa4493a0e948229405cc11f5533c0"
+    },
+    "upstream/assets/device_frame.png": {
+      "source": "assets/device_frame.png",
+      "sha256": "171484252a37c5d173b22f2f999c8f1600ea168d092a70756f95732b6d0ceec7"
+    },
+    "upstream/compose.py": {
+      "source": "compose.py",
+      "sha256": "f2ad48829dd18b6ffd91ec1d212beae74eae481744b5b4581f5fb63af5a0a2f8"
+    },
+    "upstream/generate_frame.py": {
+      "source": "generate_frame.py",
+      "sha256": "d88e3fd4690a456d9dab5c7e868eea75dd2f989c038903fe6d2d2e3e63564f78"
+    },
+    "upstream/showcase.py": {
+      "source": "showcase.py",
+      "sha256": "6f5a0495e3b40dc11cfe0386245aea2b31eb6eefb2aa800d14d3f95799ae0aa7"
+    }
+  },
+  "phases": {
+    "references/phases/recall.md": {
+      "start_line": 13,
+      "end_line": 47,
+      "sha256": "7bddf5407e11033d0b8287309bb1f2091bbc0fcd9cc51d750d12304b2685d656"
+    },
+    "references/phases/benefits.md": {
+      "start_line": 48,
+      "end_line": 124,
+      "sha256": "23110f191c2c4603052b436fbfc3d98fe76d083af36eb8e2232ab017bc0556e0"
+    },
+    "references/phases/pairing.md": {
+      "start_line": 125,
+      "end_line": 209,
+      "sha256": "c16304add8c9baf9d9a115375df8e71fb660b3133e10d2347d7dd76c024c80d0"
+    },
+    "references/phases/generation-design.md": {
+      "start_line": 210,
+      "end_line": 275,
+      "sha256": "1e99212319cf36c507b4661f71d2546c3c9532b4070fa3b3f025b93a3f12efd0"
+    },
+    "references/phases/generation-scaffold.md": {
+      "start_line": 276,
+      "end_line": 320,
+      "sha256": "cc6607dde6352b783db832a3b92e70c21e0f329e5d79369eb090cd9d2fd405ee"
+    },
+    "references/phases/generation-enhance.md": {
+      "start_line": 321,
+      "end_line": 393,
+      "sha256": "0300c0a73cbf63ec741c58da29dab0789a1aba7d0abc21c6822b14ede32e614e"
+    },
+    "references/phases/generation-review.md": {
+      "start_line": 394,
+      "end_line": 464,
+      "sha256": "915e16eb714e29bb01bc548b0d209c5bc162e35eea2ce634d2aaa33e344f6abe"
+    },
+    "references/phases/generation-colour.md": {
+      "start_line": 465,
+      "end_line": 482,
+      "sha256": "1a6d4bcda9f5ba8321c5e8d32868aebba13f9887dbf99881736b017f3313f050"
+    },
+    "references/phases/generation-delivery.md": {
+      "start_line": 483,
+      "end_line": 544,
+      "sha256": "05318c79bbaf603afcbebfc72f87c28085ebd5d081de5066fd075a5e79c69e6f"
+    },
+    "references/phases/principles.md": {
+      "start_line": 545,
+      "end_line": 556,
+      "sha256": "2cd14693f01c13fc57ecbc219213774f02d5aa8e278d9406073618966d2a06c6"
+    }
+  }
+}
